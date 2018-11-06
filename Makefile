@@ -27,4 +27,4 @@ install: modules_install
 
 modules_install:
 	cp $(DRIVER).ko $(KERNEL_MODULES)/kernel/$(MOD_SUBDIR)
-	depmod -a -F $(SYSTEM_MAP) $(TARGET)
+	# depmod -a -F $(SYSTEM_MAP) $(TARGET)

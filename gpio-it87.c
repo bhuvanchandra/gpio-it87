@@ -289,11 +289,13 @@ static const struct gpio_chip it87_template_chip = {
 
 static int __init it87_gpio_init(void)
 {
-	int rc = 0, i;
+	int rc = 0;
 	u16 chip_type;
 	u8 chip_rev, gpio_ba_reg;
+#if 0
+        int i;
 	char *labels, **labels_table;
-
+#endif
 	struct it87_gpio *it87_gpio = &it87_gpio_chip;
 
 	rc = superio_enter();
@@ -360,7 +362,7 @@ static int __init it87_gpio_init(void)
 	if (!request_region(it87_gpio->io_base, it87_gpio->io_size,
 							KBUILD_MODNAME))
 		return -EBUSY;
-
+#if 0
 	/* Set up aliases for the GPIO connection.
 	 *
 	 * ITE documentation for recent chips such as the IT8728F
@@ -384,12 +386,12 @@ static int __init it87_gpio_init(void)
 	for (i = 0; i < it87_gpio->chip.ngpio; i++) {
 		char *label = &labels[i * sizeof("it87_gpXY")];
 
-		sprintf(label, "it87_gp%u%u", 1+(i/8), i%8);
+		sprintf(label, "gpio%u%u", 1+(i/8), i%8);
 		labels_table[i] = label;
 	}
 
 	it87_gpio->chip.names = (const char *const*)labels_table;
-
+#endif
 	rc = gpiochip_add_data(&it87_gpio->chip, it87_gpio);
 	if (rc)
 		goto labels_free;
@@ -397,8 +399,10 @@ static int __init it87_gpio_init(void)
 	return 0;
 
 labels_free:
+#if 0
 	kfree(labels_table);
 	kfree(labels);
+#endif
 	release_region(it87_gpio->io_base, it87_gpio->io_size);
 	return rc;
 }
